@@ -1,0 +1,381 @@
+## PROJECT: GrahakBot
+### "AI assistant for every Indian business. In seconds."
+
+---
+
+## ROLE
+You are an expert full-stack AI engineer and UI designer.
+Build a production-quality React web app called GrahakBot.
+This is a portfolio demo that showcases an AI-powered
+WhatsApp-style business assistant for Indian SMEs.
+Dark theme. Clean. Professional. India-first product feel.
+
+---
+
+## WHO I AM
+Name: Abhishek Mishra
+GitHub: github.com/abhimishra01
+Stack: React, Vite, Tailwind CSS, Claude API,
+       OpenAI API, Gemini API
+
+---
+
+## WHAT WE ARE BUILDING
+A single-page React web app with:
+1. A live interactive WhatsApp-style chat demo
+   powered by real AI (Claude/OpenAI/Gemini)
+2. A business customizer that changes the AI
+   persona in real time
+3. A lead generation form for businesses that
+   want this for their real WhatsApp
+
+Repo: grahakbot
+Deploy: GitHub Pages
+Vite base: /grahakbot/
+URL: abhimishra01.github.io/grahakbot
+
+---
+
+## TECH STACK
+- React + Vite
+- Tailwind CSS
+- Framer Motion (message animations)
+- Formspree (lead gen form)
+- gh-pages (deploy)
+- Claude/OpenAI/Gemini API (user brings own key)
+- No backend. 100% client-side.
+
+---
+
+## FILE STRUCTURE
+Scaffold exactly this:
+
+grahakbot/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── Hero.jsx
+│   │   ├── DemoSection.jsx
+│   │   ├── ChatWindow.jsx
+│   │   ├── BotCustomizer.jsx
+│   │   ├── MessageBubble.jsx
+│   │   ├── TypingIndicator.jsx
+│   │   ├── HowItWorks.jsx
+│   │   ├── UseCases.jsx
+│   │   ├── GetItForm.jsx
+│   │   └── Footer.jsx
+│   ├── utils/
+│   │   ├── aiClient.js
+│   │   └── systemPrompt.js
+│   ├── data/
+│   │   ├── useCases.js
+│   │   └── starterMessages.js
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── .env
+├── .env.example
+├── vite.config.js
+├── tailwind.config.js
+├── postcss.config.js
+├── package.json
+└── README.md
+
+---
+
+## BUILD ORDER — follow exactly
+1. package.json with all dependencies
+2. vite.config.js with base: '/grahakbot/'
+3. tailwind.config.js + postcss.config.js
+4. src/utils/systemPrompt.js
+5. src/utils/aiClient.js
+6. src/data/useCases.js
+7. src/data/starterMessages.js
+8. All components in order listed
+9. App.jsx
+10. README.md
+
+---
+
+## DESIGN SYSTEM
+Background: #07040f
+Surface: #111118
+Surface 2: #1a1825
+Accent Primary: #8b5cf6 (violet-500)
+Accent Secondary: #6366f1 (indigo-500)
+Chat bubble (bot): #1a1825 with violet border
+Chat bubble (user): #8b5cf6
+Text Primary: #ede9fe
+Text Muted: #4c4470
+Border: rgba(139,92,246,0.15)
+
+Font: Syne for headings, DM Sans for body
+Add to index.html:
+<link href="https://fonts.googleapis.com/css2?
+family=Syne:wght@400;700;800&family=DM+Sans:
+wght@300;400;500&display=swap" rel="stylesheet">
+
+---
+
+## AI PROVIDER STANDARD
+Support three providers:
+- Anthropic Claude (claude-haiku-4-5-20251001) default
+- OpenAI (gpt-4o-mini)
+- Google Gemini (gemini-1.5-flash)
+
+API key resolution:
+1. import.meta.env.VITE_X_API_KEY → green Dev Mode badge
+2. localStorage → skip prompt
+3. Show inline key input in demo section
+
+Show provider selector + cost per message:
+- Claude: ~$0.001 / message
+- OpenAI: ~$0.0005 / message
+- Gemini: Free tier
+
+---
+
+## src/utils/systemPrompt.js
+Build a function buildSystemPrompt(config) that
+takes a config object and returns a system prompt:
+
+config shape:
+{
+  businessName: string,
+  businessType: string,
+  services: string[],
+  hours: string,
+  location: string,
+  tone: 'friendly' | 'professional' | 'casual'
+}
+
+The prompt must:
+- Set the AI as a customer assistant for that business
+- List the services, hours, location
+- Set tone based on selection
+- Instruct replies to be 1-3 sentences max
+- Sound like a real WhatsApp message
+- Never mention being an AI unless directly asked
+- Handle orders, appointments, FAQs, pricing queries
+- Politely decline anything outside business scope
+
+---
+
+## src/utils/aiClient.js
+Multi-provider client identical to project standard.
+Single function: sendMessage(messages, config)
+where messages is the full conversation history array
+and config has providerKey and apiKey.
+
+Each provider call passes:
+- System prompt from buildSystemPrompt()
+- Full conversation history for context
+- Max tokens: 150 (keep replies short like WhatsApp)
+- Try/catch with meaningful error messages
+
+---
+
+## src/data/starterMessages.js
+Export an object with starter messages per
+business type. When user selects a business type
+in the customizer, preload the chat with a
+relevant opening customer message.
+
+Example:
+restaurant: "Hi, do you have tables available
+  for 4 people tonight at 8pm?"
+salon: "Hello, I wanted to book a haircut for
+  tomorrow. What slots are available?"
+retail: "Hi, do you have blue running shoes
+  in size 9?"
+ca: "I need help filing my GST returns this
+  month. Can you guide me?"
+coaching: "I want to enroll my child for
+  Math classes. What are the fees?"
+clinic: "I need to book an appointment with
+  the doctor for tomorrow morning."
+
+---
+
+## src/data/useCases.js
+Export array of 6 use case objects:
+Each has: icon, title, description, exampleQ, exampleA
+
+Restaurant, Salon, Retail Shop,
+CA/Accountant, Coaching Centre, Medical Clinic
+
+---
+
+## COMPONENT SPECS
+
+### Navbar
+Fixed top, blur backdrop.
+Logo: "GrahakBot" in violet with a small bot icon.
+Single CTA button: "Get It For My Business"
+scrolls to GetItForm.
+Mobile: hamburger.
+
+### Hero
+Full viewport height.
+Headline: "Give Your Business an AI Assistant.
+Instantly."
+Subheadline: "GrahakBot answers your customers
+24/7 — orders, appointments, FAQs. No tech
+skills needed."
+Two CTAs:
+- Primary: "Try Live Demo" → scrolls to DemoSection
+- Secondary: "Get It For My Business" → scrolls to form
+Stat row below CTAs:
+- "63M+ Indian MSMEs"
+- "24/7 Customer Replies"
+- "2 min Setup"
+Subtle animated dot grid background in violet.
+
+### DemoSection
+Two column layout (stack on mobile):
+Left column: BotCustomizer
+Right column: ChatWindow
+
+Section heading: "Try It Live"
+Subheading: "Customize your business below and
+chat as a customer on the right."
+
+### BotCustomizer
+Form with these fields:
+- Business Name (text input, default: "Sharma Electronics")
+- Business Type (dropdown): Restaurant, Salon,
+  Retail Shop, CA/Accountant, Coaching Centre,
+  Medical Clinic, Other
+- Services (3 text inputs, default values per type)
+- Working Hours (text, default: "10am - 8pm")
+- Location (text, default: "Lucknow, UP")
+- Tone (3 toggle buttons): Friendly, Professional, Casual
+- Provider selector (Claude/OpenAI/Gemini)
+- API Key input (if no env/localStorage key found)
+
+On any field change: rebuild system prompt and
+clear chat history, load starter message for
+the selected business type.
+
+"Reset Chat" button at bottom.
+
+### ChatWindow
+WhatsApp-inspired dark chat interface.
+Header: business name + "🟢 Online" status.
+Messages area: scrollable, messages appear
+from bottom.
+Bot messages: left aligned, dark surface bubble,
+violet left border.
+User messages: right aligned, violet bubble,
+white text.
+Input bar at bottom: text input + Send button.
+On send: show user message immediately,
+show TypingIndicator, then show bot reply.
+
+### MessageBubble
+Props: message (string), sender ('bot'|'user'),
+timestamp.
+Animate in with Framer Motion (slide up + fade).
+Show timestamp below each bubble.
+
+### TypingIndicator
+Three animated dots, left aligned like bot message.
+Show while waiting for AI response.
+Pulse animation on dots.
+
+### HowItWorks
+3 step cards in a row (stack on mobile).
+Step 1: Configure — "Tell us your business name,
+services, and working hours."
+Step 2: Deploy — "We set up your AI assistant
+on WhatsApp Business in under 2 hours."
+Step 3: Respond — "Your customers get instant
+replies 24/7. You focus on running your business."
+Each card: number, icon, title, description.
+Violet accent on step numbers.
+
+### UseCases
+Section heading: "Works For Every Business"
+6 cards in a 3x2 grid (2x3 on mobile).
+Each card: emoji icon, business type, one line
+description, example Q&A snippet styled like
+a mini chat preview.
+
+### GetItForm
+Section heading: "Want GrahakBot For Your Business?"
+Subheading: "Fill this in. I'll reach out within
+24 hours to set it up for you."
+
+Form fields:
+- Your Name (required)
+- Business Name (required)
+- Business Type (dropdown, same options)
+- WhatsApp Number (required, +91 prefix shown)
+- Tell me about your business (textarea)
+- Submit: "Yes, I Want GrahakBot"
+
+Formspree action: https://formspree.io/f/REPLACE_ID
+Success: "🎉 Got it! Expect a WhatsApp message
+from me within 24 hours."
+Error: "Something went wrong. WhatsApp me directly."
+
+### Footer
+"Built by Abhishek Mishra · github.com/abhimishra01"
+"GrahakBot · 2026"
+LinkedIn + GitHub icons.
+
+---
+
+## .ENV.EXAMPLE
+VITE_ANTHROPIC_API_KEY=
+VITE_OPENAI_API_KEY=
+VITE_GEMINI_API_KEY=
+VITE_FORMSPREE_ID=
+
+---
+
+## PACKAGE.JSON SCRIPTS
+"dev": "vite"
+"build": "vite build"
+"preview": "vite preview"
+"predeploy": "npm run build"
+"deploy": "gh-pages -d dist"
+
+---
+
+## CODE QUALITY RULES
+- try/catch on every AI call
+- Clean JSON before parsing
+- Loading states on all async ops
+- Mobile responsive on every component
+- All external links: target="_blank"
+  rel="noopener noreferrer"
+- viewport={{ once: true }} on scroll animations
+- Max tokens 150 on all AI calls — keep it WhatsApp-like
+- No lorem ipsum — all copy is final
+
+---
+
+## README.md
+# GrahakBot 🤖
+> AI assistant for every Indian business. In seconds.
+
+[Demo GIF here]
+
+## What it does
+## How the demo works
+## Supported AI Providers (table)
+## Run Locally
+## Deploy to GitHub Pages
+## Built by Abhishek Mishra — github.com/abhimishra01
+
+---
+
+## START INSTRUCTION
+Begin with step 1: scaffold complete folder structure
+and package.json.
+Follow build order exactly.
+Build every file completely before moving to next.
+The DemoSection with live AI chat is the most
+important feature — make it polished and smooth.
