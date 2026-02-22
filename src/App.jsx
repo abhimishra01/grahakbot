@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import WhatsAppStories from './components/WhatsAppStories'
 import DemoSection from './components/DemoSection'
 import HowItWorks from './components/HowItWorks'
 import UseCases from './components/UseCases'
@@ -13,8 +14,7 @@ export default function App() {
       <main>
         <Hero />
 
-        {/* Divider glow */}
-        <div className="h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent mx-8" />
+        <WhatsAppStories />
 
         <DemoSection />
 

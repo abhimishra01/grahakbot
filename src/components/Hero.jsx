@@ -39,7 +39,7 @@ export default function Hero() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-16 overflow-hidden">
+    <section className="relative flex flex-col items-center justify-center text-center px-4 pt-32 pb-20 overflow-hidden">
       <DotGrid />
 
       {/* Glow blob */}
@@ -79,15 +79,20 @@ export default function Hero() {
         </motion.h1>
 
         {/* Subheadline */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-body text-text-muted text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="max-w-2xl mx-auto mb-10"
         >
-          GrahakBot answers your customers 24/7 — orders, appointments, FAQs.
-          No tech skills needed.
-        </motion.p>
+          <p className="font-body text-text-primary text-xl sm:text-2xl leading-relaxed mb-2 font-medium">
+            Your customers ask. GrahakBot answers. Always.
+          </p>
+          <p className="font-body text-text-muted text-base sm:text-lg leading-relaxed">
+            Built for Indian businesses.
+            Speaks your customer's language.
+          </p>
+        </motion.div>
 
         {/* CTAs */}
         <motion.div
@@ -131,16 +136,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-      >
-        <span className="text-text-muted text-xs font-body">Scroll to try</span>
-        <div className="w-px h-8 bg-gradient-to-b from-accent/40 to-transparent" />
-      </motion.div>
     </section>
   )
 }

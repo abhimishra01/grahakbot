@@ -13,43 +13,59 @@ export default function MessageBubble({ message, sender, timestamp }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className={`flex items-end gap-2 mb-3 ${isBot ? 'justify-start' : 'justify-end'}`}
+      initial={{ opacity: 0, x: isBot ? -20 : 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      style={{
+        alignSelf: isBot ? 'flex-start' : 'flex-end',
+        maxWidth: '75%',
+      }}
     >
-      {/* Bot avatar */}
-      {isBot && (
-        <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center text-xs flex-shrink-0 mb-5">
-          🤖
-        </div>
-      )}
-
-      <div className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} max-w-[80%]`}>
-        {/* Bubble */}
-        <div
-          className={`px-4 py-2.5 rounded-2xl text-sm font-body leading-relaxed ${
-            isBot
-              ? 'bg-surface2 border border-[rgba(139,92,246,0.25)] border-l-2 border-l-accent text-text-primary rounded-bl-sm'
-              : 'bg-accent text-white rounded-br-sm'
-          }`}
-          style={{ wordBreak: 'break-word' }}
+      <div
+        style={{
+          background: isBot ? '#1f2c34' : '#005c4b',
+          borderRadius: isBot ? '0px 8px 8px 8px' : '8px 0px 8px 8px',
+          padding: '8px 12px',
+          wordBreak: 'break-word',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '13px',
+            lineHeight: '1.5',
+            color: '#e9edef',
+            margin: 0,
+            whiteSpace: 'pre-wrap',
+          }}
         >
           {message}
-        </div>
+        </p>
 
-        {/* Timestamp */}
-        <span className="text-[10px] text-text-muted mt-1 px-1">
-          {formatTime(timestamp)}
-        </span>
+        {/* Timestamp + ticks */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: '3px',
+            marginTop: '3px',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'DM Sans, sans-serif',
+              fontSize: '10px',
+              color: 'rgba(233,237,239,0.5)',
+            }}
+          >
+            {formatTime(timestamp)}
+          </span>
+          {!isBot && (
+            <span style={{ fontSize: '11px', color: '#53bdeb', lineHeight: 1 }}>✓✓</span>
+          )}
+        </div>
       </div>
-
-      {/* User avatar */}
-      {!isBot && (
-        <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-xs text-white flex-shrink-0 mb-5">
-          👤
-        </div>
-      )}
     </motion.div>
   )
 }

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { Send, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import MessageBubble from './MessageBubble'
 import TypingIndicator from './TypingIndicator'
 import { sendMessage, resolveApiKey } from '../utils/aiClient'
@@ -9,11 +9,13 @@ export default function ChatWindow({ businessConfig, provider, messages, setMess
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [error, setError] = useState(null)
-  const bottomRef = useRef(null)
+  const chatContainerRef = useRef(null)
   const inputRef = useRef(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
   }, [messages, isTyping])
 
   const handleSend = async () => {
@@ -35,23 +37,11 @@ export default function ChatWindow({ businessConfig, provider, messages, setMess
     setIsTyping(true)
 
     try {
-      // Build history for AI (only role + content, no extra fields)
       const history = updatedMessages.map((m) => ({ role: m.role, content: m.content }))
-
-      const reply = await sendMessage(history, {
-        provider,
-        apiKey,
-        businessConfig,
-      })
-
+      const reply = await sendMessage(history, { provider, apiKey, businessConfig })
       setMessages((prev) => [
         ...prev,
-        {
-          role: 'assistant',
-          content: reply,
-          sender: 'bot',
-          timestamp: Date.now(),
-        },
+        { role: 'assistant', content: reply, sender: 'bot', timestamp: Date.now() },
       ])
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
@@ -67,48 +57,134 @@ export default function ChatWindow({ businessConfig, provider, messages, setMess
     }
   }
 
+  const avatarLetter = (businessConfig.businessName || 'B').charAt(0).toUpperCase()
+  const canSend = input.trim().length > 0 && !isTyping
+
   return (
-    <div className="flex flex-col bg-surface border border-[rgba(139,92,246,0.15)] rounded-2xl overflow-hidden h-[580px]">
-      {/* Chat header */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-surface2 border-b border-[rgba(139,92,246,0.15)]">
-        <div className="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center text-base">
-          🤖
+    <div
+      style={{
+        width: '100%',
+        height: '580px',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        border: '1px solid rgba(255,255,255,0.06)',
+        boxShadow:
+          '0 0 0 1px rgba(139,92,246,0.15), 0 24px 60px rgba(0,0,0,0.5)',
+      }}
+    >
+      {/* ── Header ── */}
+      <div
+        style={{
+          background: '#1f2c34',
+          height: '60px',
+          padding: '0 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          borderBottom: '1px solid rgba(255,255,255,0.04)',
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '18px', cursor: 'pointer' }}>
+          ←
+        </span>
+
+        {/* Avatar — first letter of businessName */}
+        <div
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontFamily: 'Syne, sans-serif',
+            fontWeight: '700',
+            fontSize: '14px',
+            flexShrink: 0,
+            userSelect: 'none',
+          }}
+        >
+          {avatarLetter}
         </div>
-        <div>
-          <div className="text-sm font-body font-medium text-text-primary">
+
+        {/* Name + status */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontFamily: 'DM Sans, sans-serif',
+              fontWeight: '600',
+              fontSize: '14px',
+              color: '#e9edef',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {businessConfig.businessName || 'Business Assistant'}
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-[11px] text-text-muted font-body">Online</span>
+          <div
+            style={{
+              fontFamily: 'DM Sans, sans-serif',
+              fontSize: '12px',
+              color: '#00a884',
+            }}
+          >
+            ● online
           </div>
         </div>
 
-        {/* WhatsApp-style dots */}
-        <div className="ml-auto flex gap-1">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="w-1 h-1 rounded-full bg-text-muted/50" />
-          ))}
+        {/* Right icons */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '20px',
+            color: 'rgba(255,255,255,0.5)',
+            fontSize: '16px',
+          }}
+        >
+          <span role="img" aria-label="video">📹</span>
+          <span role="img" aria-label="call">📞</span>
+          <span style={{ fontWeight: '900', letterSpacing: '1px', fontSize: '18px' }}>⋮</span>
         </div>
       </div>
 
-      {/* Messages area */}
+      {/* ── Chat area ── */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-1"
+        ref={chatContainerRef}
+        className="wa-chat-area"
         style={{
+          background: '#0b141a',
           backgroundImage:
-            'radial-gradient(circle, rgba(139,92,246,0.03) 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
+            "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E\")",
+          backgroundSize: '60px 60px',
+          flex: 1,
+          overflowY: 'auto',
+          padding: '16px 12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
         }}
       >
-        {messages.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center text-center gap-2 opacity-50">
-            <div className="text-3xl">💬</div>
-            <p className="text-text-muted text-sm font-body">
-              Configure the bot and start chatting below
-            </p>
-          </div>
-        )}
+        {/* Date pill */}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.07)',
+            borderRadius: '8px',
+            padding: '3px 10px',
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.4)',
+            alignSelf: 'center',
+            marginBottom: '4px',
+          }}
+        >
+          Today
+        </div>
 
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
@@ -124,22 +200,58 @@ export default function ChatWindow({ businessConfig, provider, messages, setMess
         <AnimatePresence>
           {isTyping && <TypingIndicator />}
         </AnimatePresence>
-
-        <div ref={bottomRef} />
       </div>
 
-      {/* Error banner */}
+      {/* ── Error banner ── */}
       <AnimatePresence>
         {error && (
-          <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/20 flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-red-400 font-body">{error}</p>
+          <div
+            style={{
+              padding: '8px 16px',
+              background: 'rgba(239,68,68,0.1)',
+              borderTop: '1px solid rgba(239,68,68,0.2)',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '8px',
+              flexShrink: 0,
+            }}
+          >
+            <AlertCircle
+              style={{ width: '14px', height: '14px', color: '#f87171', flexShrink: 0, marginTop: '2px' }}
+            />
+            <p
+              style={{
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: '12px',
+                color: '#f87171',
+                margin: 0,
+              }}
+            >
+              {error}
+            </p>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Input bar */}
-      <div className="px-3 py-3 border-t border-[rgba(139,92,246,0.15)] bg-surface2 flex items-center gap-2">
+      {/* ── Input bar ── */}
+      <div
+        style={{
+          background: '#1f2c34',
+          padding: '10px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          borderTop: '1px solid rgba(255,255,255,0.04)',
+          flexShrink: 0,
+        }}
+      >
+        <span
+          style={{ color: 'rgba(255,255,255,0.4)', fontSize: '20px', cursor: 'pointer', flexShrink: 0 }}
+          role="img" aria-label="emoji"
+        >
+          😊
+        </span>
+
         <input
           ref={inputRef}
           type="text"
@@ -148,14 +260,52 @@ export default function ChatWindow({ businessConfig, provider, messages, setMess
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           disabled={isTyping}
-          className="flex-1 bg-surface border border-[rgba(139,92,246,0.2)] rounded-full px-4 py-2.5 text-sm text-text-primary font-body placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors disabled:opacity-50"
+          className="wa-input"
+          style={{
+            flex: 1,
+            background: '#2a3942',
+            border: 'none',
+            borderRadius: '24px',
+            padding: '10px 16px',
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '14px',
+            color: '#e9edef',
+            outline: 'none',
+            opacity: isTyping ? 0.5 : 1,
+          }}
         />
+
+        <span
+          style={{ color: 'rgba(255,255,255,0.4)', fontSize: '18px', cursor: 'pointer', flexShrink: 0 }}
+          role="img" aria-label="attach"
+        >
+          📎
+        </span>
+
         <button
           onClick={handleSend}
-          disabled={!input.trim() || isTyping}
-          className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+          disabled={!canSend}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            background: canSend ? '#00a884' : 'rgba(0,168,132,0.35)',
+            border: 'none',
+            cursor: canSend ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontSize: '18px',
+            flexShrink: 0,
+            transition: 'background 0.2s ease, transform 0.1s ease',
+          }}
+          onMouseEnter={(e) => { if (canSend) e.currentTarget.style.background = '#008f72' }}
+          onMouseLeave={(e) => { if (canSend) e.currentTarget.style.background = '#00a884' }}
+          onMouseDown={(e) => { if (canSend) e.currentTarget.style.transform = 'scale(0.95)' }}
+          onMouseUp={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
         >
-          <Send className="w-4 h-4 text-white" />
+          ➤
         </button>
       </div>
     </div>

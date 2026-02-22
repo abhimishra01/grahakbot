@@ -3,28 +3,36 @@ import { motion } from 'framer-motion'
 export default function TypingIndicator() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 6 }}
-      transition={{ duration: 0.2 }}
-      className="flex items-end gap-2 mb-2"
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -10 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      style={{ alignSelf: 'flex-start' }}
     >
-      <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center text-xs flex-shrink-0">
-        🤖
-      </div>
-      <div className="bg-surface2 border border-[rgba(139,92,246,0.25)] border-l-2 border-l-accent px-4 py-3 rounded-2xl rounded-bl-sm">
-        <div className="flex items-center gap-1">
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              className="w-1.5 h-1.5 bg-accent rounded-full block"
-              style={{
-                animation: `dotBounce 1.4s infinite ease-in-out both`,
-                animationDelay: `${i * 0.16}s`,
-              }}
-            />
-          ))}
-        </div>
+      <div
+        style={{
+          background: '#1f2c34',
+          borderRadius: '0px 8px 8px 8px',
+          padding: '12px 16px',
+          display: 'flex',
+          gap: '4px',
+          alignItems: 'center',
+        }}
+      >
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            style={{
+              display: 'block',
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: 'rgba(233,237,239,0.4)',
+              animation: 'typingBounce 1.2s infinite ease-in-out',
+              animationDelay: `${i * 0.15}s`,
+            }}
+          />
+        ))}
       </div>
     </motion.div>
   )

@@ -54,6 +54,28 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+/* ─── WhatsApp chat input placeholder ───────────────────── */
+.wa-input::placeholder {
+  color: rgba(233, 237, 239, 0.35);
+}
+
+/* ─── WhatsApp chat area scrollbar ──────────────────────── */
+.wa-chat-area::-webkit-scrollbar {
+  width: 4px;
+}
+.wa-chat-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wa-chat-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
 /* ─── Select element reset ───────────────────────────────── */
 select {
   -webkit-appearance: none;
