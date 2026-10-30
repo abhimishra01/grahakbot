@@ -108,12 +108,6 @@ export default function Hero() {
             Try Live Demo
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
-          <button
-            onClick={() => scrollTo('get-it')}
-            className="flex items-center gap-2 border border-[rgba(139,92,246,0.4)] text-text-primary hover:bg-surface font-body font-medium px-8 py-3.5 rounded-xl text-base transition-all w-full sm:w-auto justify-center"
-          >
-            Get It For My Business
-          </button>
         </motion.div>
 
         {/* Stats row */}

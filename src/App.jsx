@@ -4,7 +4,6 @@ import WhatsAppStories from './components/WhatsAppStories'
 import DemoSection from './components/DemoSection'
 import HowItWorks from './components/HowItWorks'
 import UseCases from './components/UseCases'
-import GetItForm from './components/GetItForm'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -56,18 +55,17 @@ export default function App() {
               <button
                 onClick={() =>
                   document
-                    .getElementById('get-it')
+                    .getElementById('demo')
                     ?.scrollIntoView({ behavior: 'smooth' })
                 }
                 className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-body font-medium px-8 py-3.5 rounded-xl text-base transition-all hover:shadow-[0_0_30px_rgba(139,92,246,0.5)]"
               >
-                Get It For My Business →
+                Try the Live Demo →
               </button>
             </div>
           </div>
         </div>
 
-        <GetItForm />
       </main>
       <Footer />
     </div>

@@ -11,7 +11,6 @@ GrahakBot is a portfolio demo showcasing an AI-powered WhatsApp-style business a
 
 - **Live chat demo** powered by real AI (Claude / OpenAI / Gemini)
 - **Business customizer** that changes the AI persona in real time
-- **Lead gen form** for businesses that want this on their real WhatsApp
 - Dark theme, India-first design, fully mobile-responsive
 
 ---
@@ -54,7 +53,6 @@ Create a `.env` file (optional — you can also enter keys in the UI):
 VITE_ANTHROPIC_API_KEY=sk-ant-...
 VITE_OPENAI_API_KEY=sk-...
 VITE_GEMINI_API_KEY=AIza...
-VITE_FORMSPREE_ID=your_formspree_form_id
 ```
 
 ```bash
@@ -80,7 +78,6 @@ This runs `vite build` then `gh-pages -d dist`. Make sure your GitHub repo is na
 - **React + Vite** — frontend framework
 - **Tailwind CSS** — styling
 - **Framer Motion** — animations
-- **Formspree** — lead gen form backend
 - **gh-pages** — GitHub Pages deployment
 - **lucide-react** — icons
 

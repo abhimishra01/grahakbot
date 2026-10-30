@@ -46,12 +46,6 @@ export default function Navbar() {
           >
             Live Demo
           </button>
-          <button
-            onClick={() => scrollTo('get-it')}
-            className="bg-accent hover:bg-accent/90 text-white text-sm font-body font-medium px-4 py-2 rounded-lg transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-          >
-            Get It For My Business
-          </button>
         </div>
 
         {/* Mobile hamburger */}
@@ -83,12 +77,6 @@ export default function Navbar() {
             className="text-text-muted text-sm text-left py-2"
           >
             Use Cases
-          </button>
-          <button
-            onClick={() => scrollTo('get-it')}
-            className="bg-accent text-white text-sm font-medium px-4 py-2.5 rounded-lg text-center"
-          >
-            Get It For My Business
           </button>
         </div>
       )}
